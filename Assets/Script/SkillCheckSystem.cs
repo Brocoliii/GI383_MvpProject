@@ -34,8 +34,8 @@ public class SkillCheckSystem : MonoBehaviour
     private bool movingRight = true;
     private bool isGameActive = true;
     private float perfectMin, perfectMax;
-    private PlayerController player;
-    private StaminaSystem stamina;
+    public PlayerController player;
+    public StaminaSystem stamina;
 
     private void Start()
     {
@@ -48,50 +48,49 @@ public class SkillCheckSystem : MonoBehaviour
     {
         if (!isGameActive) return;
 
-        MoveNeedle();
-        if (Input.GetKeyDown(KeyCode.Space) )
+        
+        if (Input.GetKey(KeyCode.Space))
+        {
+            MoveNeedle();
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
         {
             CheckResult();
-        }    
+        }
     }
 
     public void SetupNewBar()
     {
-        barSlots.Clear();
+        bool isAllSameColor = true;
+        
 
-        int redCount = Random.Range(0, 3);
-        for (int i = 0; i < redCount; i ++)
+        while (isAllSameColor)
         {
-            barSlots.Add(PowerType.High);
-        }
+            barSlots.Clear();
 
-        int remainingSlots = 5 - redCount;
+            int redCount = Random.Range(0, 3);
+            for (int i = 0; i < redCount; i++) barSlots.Add(PowerType.High);
 
-        int yellowCount = Random.Range(0, remainingSlots + 1);
-        for (int i = 0; i < yellowCount;  i++)
-        {
-            barSlots.Add(PowerType.Medium);
-        }
+            int remainingSlots = 5 - redCount;
 
-        int greenCount = remainingSlots - yellowCount;
-        for (int i = 0;i < greenCount; i ++)
-        {
-            barSlots[i] = PowerType.Low;
+            int yellowCount = Random.Range(0, remainingSlots + 1);
+            for (int i = 0; i < yellowCount; i++) barSlots.Add(PowerType.Medium);
+
+            int greenCount = 5 - (redCount + yellowCount);
+            for (int i = 0; i < greenCount; i++) barSlots.Add(PowerType.Low);
+
+            if (redCount < 5 && yellowCount < 5 && greenCount < 5)
+            {
+                isAllSameColor = false;
+            }
         }
 
         for (int i = 0; i < barSlots.Count; i++)
         {
             PowerType temp = barSlots[i];
-            int randowIndex = Random.Range(i, barSlots.Count);
-            barSlots[i] = barSlots[randowIndex];
-            barSlots[randowIndex] = temp;
-        }
-
-        for (int i = 0; i < slotImages.Length; i++ )
-        {
-            if (barSlots[i] == PowerType.Low) slotImages[i].color = greenColor;
-            else if (barSlots[i] == PowerType.Medium) slotImages[i].color = yellowColor;
-            else slotImages[i].color = redColor;
+            int randomIndex = Random.Range(i, barSlots.Count);
+            barSlots[i] = barSlots[randomIndex];
+            barSlots[randomIndex] = temp;
         }
 
         float randomPos = Random.Range(0.1f, 0.9f);
@@ -99,7 +98,13 @@ public class SkillCheckSystem : MonoBehaviour
         perfectFrame.anchorMax = new Vector2(randomPos + 0.05f, 0.5f);
         perfectMin = randomPos - 0.05f;
         perfectMax = randomPos + 0.05f;
+        needleValue = 0f;
+        movingRight = true;
 
+        needle.anchorMin = new Vector2(0, 0.5f);
+        needle.anchorMax = new Vector2(0, 0.5f);
+
+        UpdateUISlots();
         isGameActive = true;
     }
     void MoveNeedle()
@@ -107,7 +112,7 @@ public class SkillCheckSystem : MonoBehaviour
         if (movingRight) needleValue += Time.deltaTime * needleSoeed;
         else needleValue -= Time.deltaTime * needleSoeed;
 
-        if (needleValue >= 1f ) movingRight = false;
+        if (needleValue >= 1f) movingRight = false;
         if (needleValue <= 0f) movingRight = true;
 
         needle.anchorMin = new Vector2(needleValue, 0.5f);
@@ -121,14 +126,14 @@ public class SkillCheckSystem : MonoBehaviour
         ApplyResult(barSlots[slotIndex], isPerfect);
     }
 
-    void ApplyResult(PowerType type , bool isPerfect)
+    void ApplyResult(PowerType type, bool isPerfect)
     {
         float force = 0;
-        float cost = 0; 
+        float cost = 0;
         switch (type)
         {
-            case PowerType.Low : force = lowForce; cost = lowCost; break;
-            case PowerType.Medium : force = medForce; cost = medCost; break;
+            case PowerType.Low: force = lowForce; cost = lowCost; break;
+            case PowerType.Medium: force = medForce; cost = medCost; break;
             case PowerType.High: force = highForce; cost = highCost; break;
         }
         if (isPerfect) cost = perfectCost;
@@ -140,5 +145,20 @@ public class SkillCheckSystem : MonoBehaviour
 
         Invoke("SetupNewBar", 1f);
     }
+
+    void UpdateUISlots()
+    { 
+        for (int i = 0; i < slotImages.Length; i++)
+        {
+            if (i < barSlots.Count)
+            {
+                if (barSlots[i] == PowerType.Low) slotImages[i].color = greenColor;
+                else if (barSlots[i] == PowerType.Medium) slotImages[i].color = yellowColor;
+                else slotImages[i].color = redColor;
+            }    
+        }
+    }
+
+
 }
 

@@ -23,7 +23,7 @@ public class StaminaSystem : MonoBehaviour
 
     public bool UseStamina(float amount)
     {
-        if (currentStamina <= amount)
+        if (currentStamina >= amount)
         {
             currentStamina -= amount;
             return true;

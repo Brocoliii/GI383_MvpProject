@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public void ClimbWithPower(float force)
     {
         if (isDead) return;
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
+        rb.linearVelocity = new Vector2(0f, force);
 
         Debug.Log("P Clime with force : " + force);
     }
