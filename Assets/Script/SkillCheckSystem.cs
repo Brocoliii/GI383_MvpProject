@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -12,9 +12,9 @@ public class SkillCheckSystem : MonoBehaviour
     public RectTransform perfectFrame;
 
     [Header("-- Bar Colors --")]
-    public Color greenColor = Color.green;
-    public Color yellowColor = Color.yellow;
-    public Color redColor = Color.red;
+    public Color LowColor = Color.green;
+    public Color mediamColor = Color.yellow;
+    public Color highColor = Color.red;
 
     [Header("-- Needle Settings --")]
     [UnityEngine.Range(0.5f, 5f)]
@@ -61,46 +61,75 @@ public class SkillCheckSystem : MonoBehaviour
 
     public void SetupNewBar()
     {
-        bool isAllSameColor = true;
-        
+        barSlots.Clear();
 
-        while (isAllSameColor)
+        barSlots.Add(PowerType.High);    
+        barSlots.Add(PowerType.Medium);  
+        barSlots.Add(PowerType.Low);     
+
+        int highCount = 1;
+        int medCount = 1;
+        int lowCount = 1;
+
+        int remainingSlots = 5 - barSlots.Count;
+
+        for (int i = 0; i < remainingSlots; i++)
         {
-            barSlots.Clear();
+            List<PowerType> available = new List<PowerType>();
 
-            int redCount = Random.Range(0, 3);
-            for (int i = 0; i < redCount; i++) barSlots.Add(PowerType.High);
+            if (highCount < 2) available.Add(PowerType.High);
+            if (medCount < 3) available.Add(PowerType.Medium);
+            if (lowCount < 3) available.Add(PowerType.Low);
 
-            int remainingSlots = 5 - redCount;
+            PowerType chosen;
 
-            int yellowCount = Random.Range(0, remainingSlots + 1);
-            for (int i = 0; i < yellowCount; i++) barSlots.Add(PowerType.Medium);
-
-            int greenCount = 5 - (redCount + yellowCount);
-            for (int i = 0; i < greenCount; i++) barSlots.Add(PowerType.Low);
-
-            if (redCount < 5 && yellowCount < 5 && greenCount < 5)
+            do
             {
-                isAllSameColor = false;
+                chosen = available[Random.Range(0, available.Count)];
             }
+            while (
+                chosen == PowerType.High &&
+                barSlots.Count > 0 &&
+                barSlots[^1] == PowerType.High
+            );
+
+            barSlots.Add(chosen);
+
+            if (chosen == PowerType.High) highCount++;
+            else if (chosen == PowerType.Medium) medCount++;
+            else lowCount++;
         }
 
         for (int i = 0; i < barSlots.Count; i++)
         {
-            PowerType temp = barSlots[i];
-            int randomIndex = Random.Range(i, barSlots.Count);
-            barSlots[i] = barSlots[randomIndex];
-            barSlots[randomIndex] = temp;
+            for (int j = i + 1; j < barSlots.Count; j++)
+            {
+                if (barSlots[i] == PowerType.High && barSlots[j] == PowerType.High)
+                {
+                    if (Mathf.Abs(i - j) == 1) continue;
+                }
+            }
+
+            int rand = Random.Range(i, barSlots.Count);
+            (barSlots[i], barSlots[rand]) = (barSlots[rand], barSlots[i]);
         }
 
-        float randomPos = Random.Range(0.1f, 0.9f);
-        perfectFrame.anchorMin = new Vector2(randomPos - 0.05f, 0.5f);
-        perfectFrame.anchorMax = new Vector2(randomPos + 0.05f, 0.5f);
-        perfectMin = randomPos - 0.05f;
-        perfectMax = randomPos + 0.05f;
+        int perfectSlot;
+        do
+        {
+            perfectSlot = Random.Range(0, 5);
+        }
+        while (barSlots[perfectSlot] == PowerType.High);
+
+        float slotWidth = 1f / 5f;
+        perfectMin = perfectSlot * slotWidth;
+        perfectMax = perfectMin + slotWidth;
+
+        perfectFrame.anchorMin = new Vector2(perfectMin, 0.5f);
+        perfectFrame.anchorMax = new Vector2(perfectMax, 0.5f);
+
         needleValue = 0f;
         movingRight = true;
-
         needle.anchorMin = new Vector2(0, 0.5f);
         needle.anchorMax = new Vector2(0, 0.5f);
 
@@ -136,14 +165,15 @@ public class SkillCheckSystem : MonoBehaviour
             case PowerType.Medium: force = medForce; cost = medCost; break;
             case PowerType.High: force = highForce; cost = highCost; break;
         }
-        if (isPerfect) cost = perfectCost;
-
-        if (stamina.UseStamina(cost))
+        if (!stamina.UseStamina(cost))
         {
-            player.ClimbWithPower(force);
+            player.SendMessage("GameOver");
+            return;
         }
 
+        player.ClimbWithPower(force);
         Invoke("SetupNewBar", 1f);
+
     }
 
     void UpdateUISlots()
@@ -152,9 +182,9 @@ public class SkillCheckSystem : MonoBehaviour
         {
             if (i < barSlots.Count)
             {
-                if (barSlots[i] == PowerType.Low) slotImages[i].color = greenColor;
-                else if (barSlots[i] == PowerType.Medium) slotImages[i].color = yellowColor;
-                else slotImages[i].color = redColor;
+                if (barSlots[i] == PowerType.Low) slotImages[i].color = LowColor;
+                else if (barSlots[i] == PowerType.Medium) slotImages[i].color = mediamColor;
+                else slotImages[i].color = highColor;
             }    
         }
     }
