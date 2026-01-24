@@ -111,6 +111,7 @@ public class SkillCheckSystem : MonoBehaviour
     void ApplyPower(PowerType type, bool isPerfect)
     {
         float f = 0, c = 0;
+        int soundIdx = 0;
 
         if (isPerfect)
         {
@@ -129,8 +130,7 @@ public class SkillCheckSystem : MonoBehaviour
 
         if (stamina.UseStamina(c))
         {
-            player.Climb(f);
-
+            player.Climb(f, soundIdx);
             if (stamina.currentStamina <= 0)
             {
                 player.GameOver();
