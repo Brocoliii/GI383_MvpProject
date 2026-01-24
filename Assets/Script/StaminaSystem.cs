@@ -4,25 +4,18 @@ using UnityEngine;
 public class StaminaSystem : MonoBehaviour
 {
     [Header("Settings")]
-    public float maxStamina = 100f;
+    public float maxStamina = 10f; 
     public float currentStamina;
-    public float regenInterval = 1f;
-    public bool isUsingStamina;
-    private Coroutine regenRoutine;
+    public float regenAmount = 1f;
+    public float regenInterval = 0.5f;
 
-
+    [HideInInspector] public bool isPaused = false;
 
     private void Start()
     {
         currentStamina = maxStamina;
-        regenRoutine = StartCoroutine(RegenerateStamina());
+        StartCoroutine(RegenerateStamina());
     }
-
-    private void Update()
-    {
-        
-    }
-
 
     public bool UseStamina(float amount)
     {
@@ -34,23 +27,15 @@ public class StaminaSystem : MonoBehaviour
         return false;
     }
 
-    public void AddStamina(float amount)
-    {
-        currentStamina = Mathf.Clamp(currentStamina + amount, 0, maxStamina);
-    }
-
     IEnumerator RegenerateStamina()
     {
         while (true)
         {
             yield return new WaitForSeconds(regenInterval);
-            if (!isUsingStamina && currentStamina < maxStamina)
+            if (!isPaused && currentStamina < maxStamina)
             {
-                currentStamina += 1;
-                currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+                currentStamina = Mathf.Clamp(currentStamina + regenAmount, 0, maxStamina);
             }
         }
     }
 }
-
-
