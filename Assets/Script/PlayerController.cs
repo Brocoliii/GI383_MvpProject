@@ -124,10 +124,12 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(new Vector2(transform.position.x, nextY));
     }
 
-    public void GameOver()
+    public void GameOver(string reason)
     {
         if (isDead || isFinished) return;
         isDead = true;
+
+        Debug.Log("<color = red> over </color> สาเหตุ :" + reason);
 
         if (anim != null) anim.SetTrigger("Eaten");
 
@@ -143,7 +145,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Monster"))
         {
-            GameOver();
+            GameOver("โดนมอนกิน!");
         }
     }
 

@@ -106,6 +106,7 @@ public class MonsterChaser : MonoBehaviour
 
     void KillPlayer()
     {
+        
         isPlayerDead = true;
 
         if (killSound != null) audioSource.PlayOneShot(killSound);
@@ -113,7 +114,7 @@ public class MonsterChaser : MonoBehaviour
         if (anim != null) anim.SetTrigger("KillPlayer");
 
         PlayerController pc = player.GetComponent<PlayerController>();
-        if (pc != null) pc.GameOver();
+        if (pc != null) pc.GameOver("โดนกิน");
     }
 
     IEnumerator RandomGrowlRoutine()
