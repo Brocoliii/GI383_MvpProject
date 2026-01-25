@@ -43,12 +43,14 @@ public class SkillCheckSystem : MonoBehaviour
         if (!isPlaying) return;
 
         if (Input.GetKeyDown(KeyCode.Space)) stamina.isPaused = true;
+        player.SetHolding(true); //Anim
 
         if (Input.GetKey(KeyCode.Space)) MoveNeedle();
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
             stamina.isPaused = false;
+            player.SetHolding(false); //Anim
             CheckResult();
         }
     }
@@ -86,14 +88,14 @@ public class SkillCheckSystem : MonoBehaviour
 
         perfectFrame.anchorMin = new Vector2(0f, perfectMin);
         perfectFrame.anchorMax = new Vector2(1f, perfectMax);
-        perfectFrame.offsetMin = Vector2.zero; 
-        perfectFrame.offsetMax = Vector2.zero; 
+        perfectFrame.offsetMin = Vector2.zero;
+        perfectFrame.offsetMax = Vector2.zero;
 
         needleValue = 0f;
         movingUp = true;
         needle.anchorMin = new Vector2(0.5f, 0f);
         needle.anchorMax = new Vector2(0.5f, 0f);
-       
+
 
         UpdateVisuals();
         isPlaying = true;
@@ -116,20 +118,21 @@ public class SkillCheckSystem : MonoBehaviour
         if (isPerfect)
         {
             f = perfectForce;
-            c = perfectCost; 
+            c = perfectCost;
         }
         else
         {
             switch (type)
             {
-                case PowerType.Low: f = lowForce; c = lowCost; break; 
-                case PowerType.Medium: f = medForce; c = medCost; break; 
+                case PowerType.Low: f = lowForce; c = lowCost; break;
+                case PowerType.Medium: f = medForce; c = medCost; break;
                 case PowerType.High: f = highForce; c = highCost; break;
             }
         }
 
         if (stamina.UseStamina(c))
         {
+            player.LaunchClimb(); //Anim
             player.Climb(f, soundIdx);
             if (stamina.currentStamina <= 0)
             {

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -17,20 +17,34 @@ public class PlayerController : MonoBehaviour
     public float finishLineY = 50f;
 
     [Header("-- Audio & Animation --")]
-    public AudioClip pullSound;   
-    public AudioClip[] climbLevelSounds; 
+    public AudioClip pullSound;
+    public AudioClip[] climbLevelSounds;
     private AudioClip currentClimbSound;
+
+    [Header("-- Oxygen Bubble --")]
+    public float idleBubbleRate = 3f;     // หายใจปกติ
+    public float climbBubbleRate = 12f;   // ตอนปีน
+    public float climbBubbleDelay = 0.15f;
 
     private float targetY;
     private Vector2 currentVelocity;
 
+ 
+    public ParticleSystem oxygenBubbleFX;
+    private Coroutine bubbleRoutine;
+
+
     private void Start()
     {
+        
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         targetY = transform.position.y;
         rb.gravityScale = 0;
+        SetBubbleRate(idleBubbleRate);
+        SetBubbleSize(0.1f);
+
     }
 
     public void Climb(float force, int soundIndex)
@@ -43,10 +57,39 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(ClimbRoutine(force));
     }
 
+    void SetBubbleRate(float rate)
+    {
+        if (!oxygenBubbleFX) return;
+
+        var emission = oxygenBubbleFX.emission;
+        emission.rateOverTime = rate;
+
+        if (!oxygenBubbleFX.isPlaying)
+            oxygenBubbleFX.Play();
+    }
+
+    void SetBubbleSize(float startSize)
+    {
+        if (!oxygenBubbleFX) return;
+
+        var main = oxygenBubbleFX.main;
+        main.startSize = startSize;
+    }
+
+
+
+
     private IEnumerator ClimbRoutine(float force)
     {
         if (anim != null) anim.SetTrigger("Pull");
+
+        SetBubbleRate(climbBubbleRate);
+        SetBubbleSize(0.2f);
+
+
         if (pullSound != null) audioSource.PlayOneShot(pullSound);
+
+
 
         yield return new WaitForSeconds(climbDelay);
 
@@ -54,9 +97,15 @@ public class PlayerController : MonoBehaviour
         {
             if (anim != null) anim.SetTrigger("ClimbLaunch");
             if (currentClimbSound != null) audioSource.PlayOneShot(currentClimbSound);
+            
+
+
+
 
             targetY = transform.position.y + (force * unitSize);
         }
+        SetBubbleRate(idleBubbleRate);
+        SetBubbleSize(0.1f);
     }
 
     private void FixedUpdate()
@@ -82,6 +131,9 @@ public class PlayerController : MonoBehaviour
 
         if (anim != null) anim.SetTrigger("Eaten");
 
+        if (oxygenBubbleFX)
+            oxygenBubbleFX.Stop();
+
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;
         GameManager.Instance.GameOver();
@@ -89,9 +141,25 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (  other.CompareTag("Monster"))
+        if (other.CompareTag("Monster"))
         {
             GameOver();
         }
     }
+
+    public void SetHolding(bool value)
+    {
+        anim.SetBool("isHolding", value);
+    }
+
+    public void LaunchClimb()
+    {
+        anim.SetTrigger("Launch");
+    }
+
+    public bool IsClimbing()
+    {
+        return anim.GetBool("isHolding");
+    }
+
 }

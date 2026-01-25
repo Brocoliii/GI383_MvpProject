@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class MonsterChaser : MonoBehaviour
 {
@@ -26,6 +27,14 @@ public class MonsterChaser : MonoBehaviour
     public float minGrowlInterval = 5f;
     public float maxGrowlInterval = 10f;
 
+
+    [Header("-- Camera Shake --")]
+    public CameraShake cameraShake;
+    public float shakeDuration = 0.1f;
+    public float maxShakeStrength = 0.3f;
+    public float shakeStartDistance = 3f; // เริ่มสั่นเมื่อใกล้กว่านี้
+
+
     private float currentSpeed;
     private bool isPlayerDead = false;
 
@@ -34,6 +43,12 @@ public class MonsterChaser : MonoBehaviour
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         StartCoroutine(RandomGrowlRoutine());
+
+     
+
+        if (cameraShake == null)
+            cameraShake = Camera.main.GetComponent<CameraShake>();
+
 
         if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
         if (player != null) playerStartY = player.position.y;
@@ -57,7 +72,20 @@ public class MonsterChaser : MonoBehaviour
             }
         }
 
-        float distance = player.position.y - transform.position.y;
+        float distance = Mathf.Abs(player.position.y - transform.position.y);
+
+
+        if (distance <= shakeStartDistance && cameraShake != null)
+        {
+            float shakeT = Mathf.InverseLerp(shakeStartDistance, 0f, distance);
+            float strength = Mathf.Lerp(0.05f, maxShakeStrength, shakeT);
+
+            cameraShake.Shake(shakeDuration, strength);
+
+
+        }
+
+
         float t = Mathf.InverseLerp(safeDistance, maxDistance, distance);
         float targetSpeed = Mathf.Lerp(minSpeed, maxSpeed, t);
 
