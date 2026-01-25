@@ -52,9 +52,9 @@ public class GameManager : MonoBehaviour
         if (!isGameActive) return;
         isGameActive = false;
         Debug.Log("Game Manager: Stage Cleared!");
-        if (!string.IsNullOrEmpty(nextSceneName))
+        if (!string.IsNullOrEmpty("EndScene"))
         {
-            SceneManager.LoadScene(nextSceneName);
+            SceneManager.LoadScene("EndScene");
         }
     }
 

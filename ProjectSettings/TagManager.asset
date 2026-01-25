@@ -51,6 +51,9 @@ TagManager:
   - name: Monster
     uniqueID: 2407328515
     locked: 0
+  - name: Parallax
+    uniqueID: 738997583
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1
