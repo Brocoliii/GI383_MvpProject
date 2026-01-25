@@ -65,43 +65,102 @@ public class SkillCheckSystem : MonoBehaviour
 
         needle.anchorMin = new Vector2(0.5f, needleValue);
         needle.anchorMax = new Vector2(0.5f, needleValue);
+        needle.anchoredPosition = Vector2.zero;
     }
 
     public void SetupNewBar()
     {
-        barSlots.Clear();
-        for (int i = 0; i < 5; i++)
-        {
-            PowerType chosen = (PowerType)Random.Range(0, 3);
-            if (i > 0 && chosen == PowerType.High && barSlots[i - 1] == PowerType.High)
-                chosen = PowerType.Low;
-            barSlots.Add(chosen);
-        }
-
-        int perfectSlot;
-        do { perfectSlot = Random.Range(0, 5); }
-        while (barSlots[perfectSlot] == PowerType.High);
-
-        float slotHeight = 1f / 5f;
-        perfectMin = perfectSlot * slotHeight;
-        perfectMax = perfectMin + slotHeight;
-
-        perfectFrame.anchorMin = new Vector2(0f, perfectMin);
-        perfectFrame.anchorMax = new Vector2(1f, perfectMax);
-        perfectFrame.offsetMin = Vector2.zero;
-        perfectFrame.offsetMax = Vector2.zero;
-
         needleValue = 0f;
         movingUp = true;
-        needle.anchorMin = new Vector2(0.5f, 0f);
-        needle.anchorMax = new Vector2(0.5f, 0f);
 
+        if (needle != null)
+        {
+            needle.anchorMin = new Vector2(0.5f, 0f);
+            needle.anchorMax = new Vector2(0.5f, 0f);
+            needle.anchoredPosition = Vector2.zero ;
+           
 
+        }
+        barSlots.Clear();
+
+        List<PowerType> pool = new List<PowerType>();
+        pool.Add(PowerType.High);
+        pool.Add(PowerType.Medium);
+        pool.Add(PowerType.Low);
+
+        List<PowerType> extra = new List<PowerType>
+        { PowerType.High,PowerType.Medium,PowerType.Medium,PowerType.Low,PowerType.Low };
+        for (int i = 0; i < 2; i++)
+        {
+            int r = Random.Range(0, extra.Count);
+            pool.Add(extra[r]);
+            extra.RemoveAt(r);
+
+        }
+
+        for (int i = 0; i < pool.Count; i++)
+        {
+            PowerType temp = pool[i];
+            int r = Random.Range(i, pool.Count);
+            pool[i] = pool[r];
+            pool[r] = temp;
+        }
+        barSlots = pool;
+        List<int> validPerfectIndices = new List<int>();
+        for (int i = 0; i < barSlots.Count; i++)
+        {
+            if (barSlots[i] != PowerType.High) validPerfectIndices.Add(i);
+        }
+
+        //if (validPerfectIndices.Count > 0)
+        //{
+        //    int perfectSlot = validPerfectIndices[Random.Range(0, validPerfectIndices.Count)];
+
+        //    float slotHeight = 1f / 5f;
+        //    perfectMin = perfectSlot * slotHeight;
+        //    perfectMax = perfectMin + slotHeight;
+
+        //    perfectFrame.anchorMin = new Vector2(0f, perfectMin);
+        //    perfectFrame.anchorMax = new Vector2(1f, perfectMax);
+        //    perfectFrame.offsetMin = Vector2.zero;
+        //    perfectFrame.offsetMax = Vector2.zero;
+        //}
+        if (validPerfectIndices.Count > 0)
+        {
+            int perfectSlot = validPerfectIndices[Random.Range(0, validPerfectIndices.Count)];
+            float totaHeight = 1f;
+            float slotHeight = totaHeight / 5f;
+
+            float perfectSize = 0.5f;
+            float actualHeight = slotHeight * perfectSize;
+
+            float offsetInsideSlot = (slotHeight - actualHeight) / 2f;
+
+            perfectMin = (perfectSlot * slotHeight) + offsetInsideSlot;
+            perfectMax = perfectMin + actualHeight;
+            if (perfectFrame != null)
+            {
+                perfectFrame.anchorMin = new Vector2(0f, perfectMin);
+                perfectFrame.anchorMax = new Vector2(1f, perfectMax);
+                perfectFrame.offsetMin = Vector2.zero;
+                perfectFrame.offsetMax = Vector2.zero;
+            }
+
+            
+        }
+        else
+        {
+            Debug.LogError("SkillCheckSystem: perfect frame missing");
+        }
+
+       
         UpdateVisuals();
         isPlaying = true;
-    }
+        
 
-    void CheckResult()
+    }
+   
+        void CheckResult()
     {
         isPlaying = false;
         bool hitPerfect = (needleValue >= perfectMin && needleValue <= perfectMax);
@@ -117,11 +176,14 @@ public class SkillCheckSystem : MonoBehaviour
 
         if (isPerfect)
         {
+            Debug.Log("hit");
             f = perfectForce;
             c = perfectCost;
+            soundIdx = 0;
         }
         else
         {
+            Debug.Log("hitcolor");
             switch (type)
             {
                 case PowerType.Low: f = lowForce; c = lowCost; break;

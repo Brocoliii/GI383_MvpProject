@@ -842,12 +842,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2021401094, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ac1b0a541e656204c904782a2f3e83a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 19.205858, y: 32.399998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1732,6 +1732,7 @@ RectTransform:
   - {fileID: 233362609}
   - {fileID: 433770834}
   - {fileID: 1608685143}
+  - {fileID: 1904952470}
   m_Father: {fileID: 1768877527}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1949,7 +1950,7 @@ MonoBehaviour:
   killSound: {fileID: 0}
   minGrowlInterval: 5
   maxGrowlInterval: 10
-  cameraShake: {fileID: 0}
+  cameraShake: {fileID: 330585549}
   shakeDuration: 1
   maxShakeStrength: 3
   shakeStartDistance: 6
@@ -2263,7 +2264,7 @@ MonoBehaviour:
   maxStamina: 10
   currentStamina: 10
   regenAmount: 1
-  regenInterval: 1
+  regenInterval: 2
   isPaused: 0
 --- !u!114 &926931569
 MonoBehaviour:
@@ -2591,12 +2592,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1367143797, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ac1b0a541e656204c904782a2f3e83a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 19.205858, y: 32.399998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2739,10 +2740,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1768877527}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 60.1319}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0.00013494, y: 0}
+  m_SizeDelta: {x: 72.072, y: 19.1693}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1059418236
 MonoBehaviour:
@@ -2927,18 +2928,18 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 539c6bc1b14814f428819bdd92b60ddf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BackgroundTiledScroller
-  player: {fileID: 926931569}
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundScroller
+  player: {fileID: 0}
   tiles:
   - {fileID: 970740902}
   - {fileID: 292107790}
   - {fileID: 1708285863}
-  deepSprite: {fileID: -446306511, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
-  deepToMidSprite: {fileID: -1745049970, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
-  midSprite: {fileID: 2021401094, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
-  midToShallowSprite: {fileID: -1954083589, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
-  shallowSprite: {fileID: 1367143797, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
-  tileSize: 10.8
+  deepSprite: {fileID: 0}
+  deepToMidSprite: {fileID: 0}
+  midSprite: {fileID: 0}
+  midToShallowSprite: {fileID: 0}
+  shallowSprite: {fileID: 0}
+  tileSize: 0
 --- !u!1 &1131347268
 GameObject:
   m_ObjectHideFlags: 0
@@ -8299,12 +8300,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -446306511, guid: 86f11b3a25f83a94985ba59129228f7a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ac1b0a541e656204c904782a2f3e83a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 19.205858, y: 32.399998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -8355,7 +8356,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 585691248}
-  - {fileID: 1904952470}
   - {fileID: 1059418235}
   m_Father: {fileID: 94927565}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8701,6 +8701,7 @@ GameObject:
   - component: {fileID: 1904952470}
   - component: {fileID: 1904952472}
   - component: {fileID: 1904952471}
+  - component: {fileID: 1904952473}
   m_Layer: 5
   m_Name: PerfectZone
   m_TagString: Untagged
@@ -8715,13 +8716,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1904952469}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 329763221}
-  m_Father: {fileID: 1768877527}
+  m_Father: {fileID: 585691248}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8766,6 +8767,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1904952469}
   m_CullTransparentMesh: 1
+--- !u!114 &1904952473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904952469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1957712584
 GameObject:
   m_ObjectHideFlags: 0
