@@ -1,7 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 using UnityEngine.UI;
+using System.Collections;
+
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -13,6 +15,13 @@ public class MainMenuManager : MonoBehaviour
     [Header("-- Skip Visual --")]
     public Image skipProgressBar;
     public float holdDuration = 2.0f;
+
+    [Header("-- Fade Settings --")]
+    public Image fadeImage;
+    public float fadeDuration = 1.0f;
+
+    private bool isFading = false;
+
 
     private static bool hasPlayedVideo = false;
 
@@ -54,6 +63,28 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    IEnumerator FadeAndLoadScene()
+    {
+        isFading = true;
+
+        float t = 0f;
+        Color c = fadeImage.color;
+
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
+            fadeImage.color = c;
+            yield return null;
+        }
+
+        c.a = 1f;
+        fadeImage.color = c;
+
+        SceneManager.LoadScene("GamePlayScene");
+    }
+
+
     public void OnPlayButtonClick()
     {
         if (!hasPlayedVideo)
@@ -68,10 +99,10 @@ public class MainMenuManager : MonoBehaviour
 
     void StartVideo()
     {
-        hasPlayedVideo = true; 
-        mainMenuUI.SetActive(false); 
-        introVideo.Play(); 
-        Cursor.visible = false; 
+        hasPlayedVideo = true;
+        mainMenuUI.SetActive(false);
+        introVideo.Play();
+        Cursor.visible = false;
     }
 
     void OnVideoFinished(VideoPlayer vp)
@@ -81,8 +112,10 @@ public class MainMenuManager : MonoBehaviour
 
     public void LoadGameScene()
     {
-        SceneManager.LoadScene("GamePlayScene");
+        if (isFading) return;
+        StartCoroutine(FadeAndLoadScene());
     }
+
 
     public void ExitGame()
     {
@@ -90,3 +123,5 @@ public class MainMenuManager : MonoBehaviour
         Application.Quit();
     }
 }
+
+

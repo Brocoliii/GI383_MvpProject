@@ -20,6 +20,10 @@ public class SkillCheckSystem : MonoBehaviour
     [Header("-- Gameplay Settings --")]
     public float needleSpeed = 2f;
 
+    [Header("-- Perfect Settings --")]
+    public float perfectSize = 0.1f;
+
+
     [Header("-- UI Shake --")]
     public RectTransform uiShakeTarget;   
     public float shakeDuration = 0.15f;
@@ -161,23 +165,17 @@ public class SkillCheckSystem : MonoBehaviour
         if (validPerfectIndices.Count > 0)
         {
             int perfectSlot = validPerfectIndices[Random.Range(0, validPerfectIndices.Count)];
-            float totaHeight = 1f;
-            float slotHeight = totaHeight / 5f;
+            float slotHeight = 1f / 5f;
 
-            float perfectSize = 0.5f;
+            UpdatePerfectVisual(perfectSlot);
+
+
             float actualHeight = slotHeight * perfectSize;
-
             float offsetInsideSlot = (slotHeight - actualHeight) / 2f;
 
             perfectMin = (perfectSlot * slotHeight) + offsetInsideSlot;
             perfectMax = perfectMin + actualHeight;
-            if (perfectFrame != null)
-            {
-                perfectFrame.anchorMin = new Vector2(0f, perfectMin);
-                perfectFrame.anchorMax = new Vector2(1f, perfectMax);
-                perfectFrame.offsetMin = Vector2.zero;
-                perfectFrame.offsetMax = Vector2.zero;
-            }
+         
 
 
         }
@@ -193,14 +191,63 @@ public class SkillCheckSystem : MonoBehaviour
 
     }
 
+    void UpdatePerfectVisual(int slotIndex)
+    {
+        if (perfectFrame == null) return;
+
+        RectTransform parent = perfectFrame.parent as RectTransform;
+        float parentHeight = parent.rect.height;
+        float slotHeightPx = parentHeight / 5f;
+
+        float visualHeight = slotHeightPx * perfectSize;
+        perfectFrame.sizeDelta = new Vector2(
+            perfectFrame.sizeDelta.x,
+            visualHeight
+        );
+
+       
+        float y = -(parentHeight / 2f)
+                  + slotHeightPx * slotIndex
+                  + slotHeightPx / 2f;
+
+        perfectFrame.anchoredPosition = new Vector2(
+            perfectFrame.anchoredPosition.x,
+            y
+        );
+    }
+
+
+
+
+    bool IsNeedleInsidePerfect()
+    {
+        Vector3[] perfectCorners = new Vector3[4];
+        perfectFrame.GetWorldCorners(perfectCorners);
+
+        Vector3 needleWorldPos = needle.position;
+
+        return needleWorldPos.y >= perfectCorners[0].y &&
+               needleWorldPos.y <= perfectCorners[1].y;
+    }
+
+
+
     void CheckResult()
     {
         isPlaying = false;
-        bool hitPerfect = (needleValue >= perfectMin && needleValue <= perfectMax);
-        int slotIndex = Mathf.Clamp(Mathf.FloorToInt(needleValue * 5), 0, 4);
+
+        bool hitPerfect = IsNeedleInsidePerfect();
+
+        float slotHeight = 1f / 5f;
+        int slotIndex = Mathf.Clamp(
+            Mathf.FloorToInt(needleValue / slotHeight),
+            0, 4
+        );
 
         ApplyPower(barSlots[slotIndex], hitPerfect);
     }
+
+
 
     public void HideUI()
     {
