@@ -224,6 +224,7 @@ public class SkillCheckSystem : MonoBehaviour
         if (isPerfect)
         {
             Debug.Log("hit");
+            SoundManager.Instance.PlaySFX("PerfectHit", 3f);
             f = perfectForce;
             c = perfectCost;
             soundIdx = 0;
@@ -231,6 +232,7 @@ public class SkillCheckSystem : MonoBehaviour
         else
         {
             Debug.Log("hitcolor");
+            SoundManager.Instance.PlaySFX("ColorHit" ,2f);
             switch (type)
             {
                 case PowerType.Low: f = lowForce; c = lowCost; break;

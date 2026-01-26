@@ -138,6 +138,7 @@ public class PlayerController : MonoBehaviour
             DeathBlur blur = Camera.main.GetComponent<DeathBlur>();
             if (blur != null)
                 blur.PlayDeathBlur();
+            SoundManager.Instance.PlaySFX("OutOfO2", 1.3f);
         }
 
        

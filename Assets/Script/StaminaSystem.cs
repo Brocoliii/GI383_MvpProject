@@ -19,9 +19,11 @@ public class StaminaSystem : MonoBehaviour
 
     public bool UseStamina(float amount)
     {
+        
         if (currentStamina >= amount)
         {
             currentStamina -= amount;
+            SoundManager.Instance.PlaySFX("O2up", 0.9f);
             return true;
         }
         return false;
@@ -29,12 +31,14 @@ public class StaminaSystem : MonoBehaviour
 
     IEnumerator RegenerateStamina()
     {
+        
         while (true)
         {
             yield return new WaitForSeconds(regenInterval);
             if (!isPaused && currentStamina < maxStamina)
             {
                 currentStamina = Mathf.Clamp(currentStamina + regenAmount, 0, maxStamina);
+
             }
         }
     }
