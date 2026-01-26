@@ -1305,12 +1305,12 @@ MonoBehaviour:
   minExposure: -1.2
   exposureSmooth: 5
   heartbeatSource: {fileID: 394748864}
-  maxHeartbeatVolume: 0.5
+  maxHeartbeatVolume: 0.3
   heartbeatSmooth: 5
   safeThreshold: 0.05
-  minBPM: 40
+  minBPM: 15
   maxBPM: 160
-  heartbeatStartDistance: 15
+  heartbeatStartDistance: 7
   volume: {fileID: 832575518}
 --- !u!114 &330585551
 MonoBehaviour:
@@ -1355,7 +1355,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 28f2dba130d95a14fac40fa9b066bc48, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2106,7 +2106,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!60 &714156241
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3816,7 +3816,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.9
+      scalar: 1.3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -9283,19 +9283,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillCheckSystem
   slotImages:
-  - {fileID: 410427063}
-  - {fileID: 901087917}
-  - {fileID: 1868478437}
-  - {fileID: 1881770608}
-  - {fileID: 1757983961}
+  - {fileID: 1608685144}
+  - {fileID: 433770835}
+  - {fileID: 233362610}
+  - {fileID: 644646518}
+  - {fileID: 1836573899}
   needle: {fileID: 1059418235}
   perfectFrame: {fileID: 329763221}
-  uiRoot: {fileID: 94927561}
   lowColor: {r: 0.7725491, g: 0.6392157, b: 0.15294118, a: 1}
   medColor: {r: 0.7725491, g: 0.54509807, b: 0.18039216, a: 1}
   highColor: {r: 0.75294125, g: 0.34509805, b: 0.19607845, a: 1}
   needleSpeed: 2
-  perfectSizeRatio: 1
+  uiShakeTarget: {fileID: 0}
+  shakeDuration: 0.15
+  shakeStrength: 15
   lowForce: 1
   lowCost: 1
   medForce: 3
@@ -9306,6 +9307,7 @@ MonoBehaviour:
   perfectCost: 0
   player: {fileID: 926931569}
   stamina: {fileID: 926931568}
+  uiRoot: {fileID: 94927561}
 --- !u!4 &1903707777
 Transform:
   m_ObjectHideFlags: 0
