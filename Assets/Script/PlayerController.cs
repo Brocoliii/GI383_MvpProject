@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem oxygenBubbleFX;
     private Coroutine bubbleRoutine;
 
+    public SkillCheckSystem skillCheck;
 
     private void Start()
     {
@@ -128,6 +129,18 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead || isFinished) return;
         isDead = true;
+
+        if (skillCheck != null)
+            skillCheck.HideUI();
+
+        if (Camera.main != null)
+        {
+            DeathBlur blur = Camera.main.GetComponent<DeathBlur>();
+            if (blur != null)
+                blur.PlayDeathBlur();
+        }
+
+       
 
         Debug.Log("<color = red> over </color> สาเหตุ :" + reason);
 

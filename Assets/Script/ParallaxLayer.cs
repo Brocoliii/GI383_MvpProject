@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ParallaxLayer : MonoBehaviour
 {
@@ -7,29 +7,57 @@ public class ParallaxLayer : MonoBehaviour
 
     [Header("-- Parallax Setting --")]
     [Range(0, 1)]
-    public float parallaxStrength;
+    public float parallaxStrength = 0.5f;
     public float tileSize;
     public Transform[] tiles;
 
-    private float startY;
+    [Header("-- Stop At Finish --")]
+    public float stopOffset = 1f;   // ระยะเผื่อก่อนถึง Finish
 
-     void Start()
+    private float startY;
+    private float stopY;
+    private bool stopped;
+
+    void Start()
     {
         startY = transform.position.y;
-        if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        if (!player)
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        // ดึง finishLine จาก Player
+        PlayerController pc = player.GetComponent<PlayerController>();
+        stopY = pc.finishLineY - stopOffset;
     }
 
-     void Update()
+    void Update()
     {
-        float distance = player.position.y * parallaxStrength;
-        transform.position = new Vector3(transform.position.x, startY + distance, transform.position.z);
+        if (stopped) return;
 
+        float playerY = player.position.y;
+
+        if (playerY >= stopY)
+        {
+            stopped = true;
+            return;
+        }
+
+        // ===== Parallax Movement =====
+        float distance = playerY * parallaxStrength;
+        transform.position = new Vector3(
+            transform.position.x,
+            startY + distance,
+            transform.position.z
+        );
+
+        // ===== Tile Loop =====
         foreach (Transform tile in tiles)
         {
-            if (player.position.y - tile.position.y > tileSize)
+            if (playerY - tile.position.y > tileSize)
             {
-                tile.position += new Vector3(0, tileSize * tiles.Length, 0);
+                tile.position += Vector3.up * tileSize * tiles.Length;
             }
         }
     }
 }
+

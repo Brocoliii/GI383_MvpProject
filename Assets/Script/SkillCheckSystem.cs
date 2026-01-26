@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 public class SkillCheckSystem : MonoBehaviour
 {
@@ -19,6 +20,14 @@ public class SkillCheckSystem : MonoBehaviour
     [Header("-- Gameplay Settings --")]
     public float needleSpeed = 2f;
 
+    [Header("-- UI Shake --")]
+    public RectTransform uiShakeTarget;   
+    public float shakeDuration = 0.15f;
+    public float shakeStrength = 15f;
+
+    private Vector2 uiOriginalPos;
+
+
     public float lowForce = 1f; public float lowCost = 1f;
     public float medForce = 3f; public float medCost = 3f;
     public float highForce = 5f; public float highCost = 5f;
@@ -32,11 +41,35 @@ public class SkillCheckSystem : MonoBehaviour
 
     public PlayerController player;
     public StaminaSystem stamina;
+    public GameObject uiRoot; 
+
 
     private void Start()
     {
+        if (uiShakeTarget != null)
+            uiOriginalPos = uiShakeTarget.anchoredPosition;
+
         SetupNewBar();
     }
+
+    IEnumerator ShakeUI()
+    {
+        float t = 0f;
+
+        while (t < shakeDuration)
+        {
+            t += Time.unscaledDeltaTime;
+
+            Vector2 randomOffset = Random.insideUnitCircle * shakeStrength;
+            uiShakeTarget.anchoredPosition = uiOriginalPos + randomOffset;
+
+            yield return null;
+        }
+
+        uiShakeTarget.anchoredPosition = uiOriginalPos;
+    }
+
+
 
     void Update()
     {
@@ -77,8 +110,8 @@ public class SkillCheckSystem : MonoBehaviour
         {
             needle.anchorMin = new Vector2(0.5f, 0f);
             needle.anchorMax = new Vector2(0.5f, 0f);
-            needle.anchoredPosition = Vector2.zero ;
-           
+            needle.anchoredPosition = Vector2.zero;
+
 
         }
         barSlots.Clear();
@@ -146,21 +179,21 @@ public class SkillCheckSystem : MonoBehaviour
                 perfectFrame.offsetMax = Vector2.zero;
             }
 
-            
+
         }
         else
         {
             Debug.LogError("SkillCheckSystem: perfect frame missing");
         }
 
-       
+
         UpdateVisuals();
         isPlaying = true;
-        
+
 
     }
-   
-        void CheckResult()
+
+    void CheckResult()
     {
         isPlaying = false;
         bool hitPerfect = (needleValue >= perfectMin && needleValue <= perfectMax);
@@ -169,8 +202,22 @@ public class SkillCheckSystem : MonoBehaviour
         ApplyPower(barSlots[slotIndex], hitPerfect);
     }
 
+    public void HideUI()
+    {
+        isPlaying = false;
+
+        if (uiRoot != null)
+            uiRoot.SetActive(false);
+    }
+
+
     void ApplyPower(PowerType type, bool isPerfect)
     {
+        shakeStrength = isPerfect ? 3f : (type == PowerType.High ? 25f : 10f);
+
+        if (uiShakeTarget != null)
+            StartCoroutine(ShakeUI());
+
         float f = 0, c = 0;
         int soundIdx = 0;
 

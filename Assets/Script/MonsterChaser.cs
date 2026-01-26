@@ -27,13 +27,30 @@ public class MonsterChaser : MonoBehaviour
     public float minGrowlInterval = 5f;
     public float maxGrowlInterval = 10f;
 
-
     [Header("-- Camera Shake --")]
     public CameraShake cameraShake;
     public float shakeDuration = 0.1f;
     public float maxShakeStrength = 0.3f;
     public float shakeStartDistance = 3f; // เริ่มสั่นเมื่อใกล้กว่านี้
 
+    [Header("-- Drag Player Down --")]
+    public float dragSpeed = 3f;
+    public float dragOffsetX = 0.3f; // ระยะเอียงเข้าหาตัว monster
+    public float dragDepth = 5f;     // ลากลงไปลึกแค่ไหน
+
+    [Header("-- Kill Camera Shake --")]
+    public float killShakeDuration = 0.35f;
+    public float killShakeStrength = 0.6f;
+
+
+    [Header("-- Kill Camera Zoom --")]
+    public float killZoomInSize = 3.2f;   // ค่ายิ่งน้อย = zoom เข้า
+    public float killZoomSpeed = 1.2f;
+
+    float shakeTimer = 0f;
+
+
+    private bool isDraggingPlayer = false;
 
     private float currentSpeed;
     private bool isPlayerDead = false;
@@ -58,6 +75,9 @@ public class MonsterChaser : MonoBehaviour
     {
         if (isPlayerDead || player == null || !GameManager.Instance.isGameActive) return;
 
+        if (isDraggingPlayer)
+            return; 
+
         if (!hasStartedChasing)
         {
             float playerProgress = player.position.y - playerStartY;
@@ -75,15 +95,16 @@ public class MonsterChaser : MonoBehaviour
         float distance = Mathf.Abs(player.position.y - transform.position.y);
 
 
-        if (distance <= shakeStartDistance && cameraShake != null)
+        if (!isDraggingPlayer && distance <= shakeStartDistance && cameraShake != null)
         {
             float shakeT = Mathf.InverseLerp(shakeStartDistance, 0f, distance);
             float strength = Mathf.Lerp(0.05f, maxShakeStrength, shakeT);
 
-            cameraShake.Shake(shakeDuration, strength);
+            cameraShake.Shake(0.1f, strength);
 
 
         }
+
 
 
         float t = Mathf.InverseLerp(safeDistance, maxDistance, distance);
@@ -106,16 +127,70 @@ public class MonsterChaser : MonoBehaviour
 
     void KillPlayer()
     {
-        
         isPlayerDead = true;
+        isDraggingPlayer = true;
 
         if (killSound != null) audioSource.PlayOneShot(killSound);
-
         if (anim != null) anim.SetTrigger("KillPlayer");
 
+        
+        if (cameraShake != null)
+            cameraShake.Shake(killShakeDuration, killShakeStrength);
+
         PlayerController pc = player.GetComponent<PlayerController>();
-        if (pc != null) pc.GameOver("โดนกิน");
+        if (pc != null)
+            pc.enabled = false;
+
+        player.SetParent(transform);
+        player.localPosition = new Vector3(0.3f, -0.7f, 3f);
+
+        CameraFollow follow = Camera.main.GetComponent<CameraFollow>();
+        if (follow != null)
+            follow.enabled = false;
+
+
+        StartCoroutine(DragDownRoutine());
     }
+
+
+
+    IEnumerator DragDownRoutine()
+    {
+        Vector3 startPlayerPos = player.localPosition;
+        Vector3 targetPlayerPos = startPlayerPos + new Vector3(0f, -dragDepth, 0f);
+
+        Camera cam = Camera.main;
+        float startZoom = cam.orthographicSize;
+        float targetZoom = killZoomInSize;
+
+        float t = 0f;
+
+        float shakeInterval = 0.25f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime * dragSpeed;
+
+            player.localPosition = Vector3.Lerp(startPlayerPos, targetPlayerPos, t);
+            cam.orthographicSize = Mathf.Lerp(startZoom, targetZoom, t);
+
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0f && cameraShake != null)
+            {
+                cameraShake.Shake(0.15f, 0.25f);
+                shakeTimer = shakeInterval;
+            }
+
+            yield return null;
+        }
+
+    }
+
+
+
+
+
+
 
     IEnumerator RandomGrowlRoutine()
     {
