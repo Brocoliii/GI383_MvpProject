@@ -42,10 +42,8 @@ public class MainMenuManager : MonoBehaviour
 
     void Update()
     {
-        // เปลี่ยนจากเช็ก isPlaying เป็นเช็กว่าเริ่มเล่นวิดีโอไปหรือยัง
         if (!hasPlayedVideo || isFading) return;
 
-        // ใช้ Input.GetKey(KeyCode.Space) หรือเช็กปุ่มที่ไม่ใช่การขยับเมาส์
         if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
         {
             if (skipUipanel != null) skipUipanel.SetActive(true);
@@ -59,7 +57,6 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            // รีเซ็ตค่าเมื่อปล่อยมือ
             currentHoldTime = 0f;
             if (skipProgressBar != null) skipProgressBar.fillAmount = 0f;
             if (skipUipanel != null) skipUipanel.SetActive(false);

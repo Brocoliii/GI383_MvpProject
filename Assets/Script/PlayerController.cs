@@ -130,7 +130,6 @@ public class PlayerController : MonoBehaviour
         if (isDead || isFinished) return;
         isDead = true;
 
-        GameManager.Instance.GameOver(reason);
 
         if (skillCheck != null)
             skillCheck.HideUI();

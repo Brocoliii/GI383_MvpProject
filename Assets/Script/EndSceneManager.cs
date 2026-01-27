@@ -78,7 +78,7 @@ public class EndSceneManager : MonoBehaviour
 
     public void BackToMainMenu()
     {
-        Debug.Log("Button Clicked: Attempting to load MainMenu..."); // ✅ เพิ่มบรรทัดนี้
+        Debug.Log("Button Clicked: Attempting to load MainMenu..."); 
         GameManager.GameStats.ResetStats();
         SceneManager.LoadScene("MainMenu");
     }
