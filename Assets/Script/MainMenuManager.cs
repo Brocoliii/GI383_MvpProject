@@ -113,6 +113,9 @@ public class MainMenuManager : MonoBehaviour
     public void LoadGameScene()
     {
         if (isFading) return;
+
+        GameManager.GameStats.ResetStats();
+
         StartCoroutine(FadeAndLoadScene());
     }
 

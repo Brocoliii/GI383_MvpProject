@@ -8,7 +8,8 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance; 
+    public static GameManager Instance;
+    public static bool HasSeenTutorialThisSession = false;
 
     [Header("-- Game States --")]
     public bool isGameActive = false;

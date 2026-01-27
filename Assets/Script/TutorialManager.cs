@@ -15,11 +15,11 @@ public class TutorialManager : MonoBehaviour
 
     void Start()
     {
-        if (PlayerPrefs.GetInt("HasSeenTutorial", 0) == 1)
+        if (GameManager.HasSeenTutorialThisSession)
         {
             Time.timeScale = 1f;
             Cursor.visible = false;
-            if (tutorialUI != null) tutorialUI.SetActive(false); // 2. สั่งปิด UI จริงๆ
+            if (tutorialUI != null) tutorialUI.SetActive(false);
             gameObject.SetActive(false);
             return;
         }
@@ -64,18 +64,29 @@ public class TutorialManager : MonoBehaviour
 
     public void PlayGame()
     {
-        PlayerPrefs.SetInt("HasSeenTutorial", 1);
-        PlayerPrefs.Save();
-        Time.timeScale = 1f;
+        //PlayerPrefs.SetInt("HasSeenTutorial", 1);
+        //PlayerPrefs.Save();
+        //Time.timeScale = 1f;
 
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+
+        //foreach (GameObject p in pages )
+        //{
+        //    if (p != null) p.SetActive(false);
+        //}
+
+        //gameObject.SetActive(false);
+        GameManager.HasSeenTutorialThisSession = true;
+
+        Time.timeScale = 1f;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        foreach (GameObject p in pages )
+        foreach (GameObject p in pages)
         {
             if (p != null) p.SetActive(false);
         }
-
         gameObject.SetActive(false);
     }
 }
