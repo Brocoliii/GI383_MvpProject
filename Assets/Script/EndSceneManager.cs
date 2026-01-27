@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 using UnityEngine.UI;
@@ -78,6 +78,7 @@ public class EndSceneManager : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        Debug.Log("Button Clicked: Attempting to load MainMenu..."); // ✅ เพิ่มบรรทัดนี้
         GameManager.GameStats.ResetStats();
         SceneManager.LoadScene("MainMenu");
     }

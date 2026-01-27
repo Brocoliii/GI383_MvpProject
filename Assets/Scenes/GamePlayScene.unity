@@ -4105,7 +4105,7 @@ MonoBehaviour:
   player: {fileID: 926931573}
   minSpeed: 1
   maxSpeed: 6
-  safeDistance: 3
+  safeDistance: 4
   maxDistance: 8
   acceleration: 3
   startDistanceThreshold: 3
@@ -4976,7 +4976,7 @@ MonoBehaviour:
   maxStamina: 10
   currentStamina: 10
   regenAmount: 1
-  regenInterval: 2
+  regenInterval: 1
   isPaused: 0
 --- !u!114 &926931569
 MonoBehaviour:
