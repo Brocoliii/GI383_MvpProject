@@ -1304,7 +1304,7 @@ MonoBehaviour:
   mainMenuUI: {fileID: 1170373691}
   skipUipanel: {fileID: 1595706189}
   skipProgressBar: {fileID: 885379118}
-  holdDuration: 2
+  holdDuration: 1
   fadeImage: {fileID: 977835875}
   fadeDuration: 2
 --- !u!4 &1203588088

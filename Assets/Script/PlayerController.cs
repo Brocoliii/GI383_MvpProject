@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
     private AudioSource audioSource;
     private bool isDead = false;
-    private bool isFinished = false;
+    public bool isFinished = false;
 
     [Header("-- Movement --")]
     public float unitSize = 1.0f;
@@ -130,6 +130,8 @@ public class PlayerController : MonoBehaviour
         if (isDead || isFinished) return;
         isDead = true;
 
+        GameManager.Instance.GameOver(reason);
+
         if (skillCheck != null)
             skillCheck.HideUI();
 
@@ -141,7 +143,13 @@ public class PlayerController : MonoBehaviour
             SoundManager.Instance.PlaySFX("OutOfO2", 1.3f);
         }
 
-       
+        string finalReason = "";
+        if (reason.Contains("อากาศ")) finalReason = "LIFE SUPPORT FAILURE: OXYGEN DEPLETED";
+        else if (reason.Contains("มอน")) finalReason = "OPERATIVE TERMINATED: CONSUMED BY HOSTILE";
+        else finalReason = "MISSION FAILED: " + reason.ToUpper();
+        GameManager.Instance.GameOver(finalReason);
+
+
 
         Debug.Log("<color = red> over </color> สาเหตุ :" + reason);
 
@@ -152,7 +160,6 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;
-        GameManager.Instance.GameOver();
     }
 
     private void OnTriggerEnter2D(Collider2D other)

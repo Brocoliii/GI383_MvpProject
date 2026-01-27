@@ -294,7 +294,7 @@ public class SkillCheckSystem : MonoBehaviour
             player.Climb(f, soundIdx);
             if (stamina.currentStamina <= 0)
             {
-                player.GameOver("ขาดอากาศหายใจ");
+                player.GameOver("OXYGEN DEPLETED");
                 return;
             }
 
@@ -302,7 +302,7 @@ public class SkillCheckSystem : MonoBehaviour
         }
         else
         {
-            player.GameOver("แรงหมด/อากาศหมด");
+            player.GameOver("OUT OF STAMINA");
         }
     }
 

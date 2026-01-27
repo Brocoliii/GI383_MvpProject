@@ -131,6 +131,8 @@ public class MonsterChaser : MonoBehaviour
         isPlayerDead = true;
         isDraggingPlayer = true;
 
+        GameManager.Instance.GameOver("OPERATIVE TERMINATED: CONSUMED BY HOSTILE");
+
         if (killSound != null) audioSource.PlayOneShot(killSound);
         SoundManager.Instance.PlaySFX("MonsterEat", 5f);
         if (anim != null) anim.SetTrigger("KillPlayer");
@@ -191,7 +193,20 @@ public class MonsterChaser : MonoBehaviour
 
 
 
+    void OnDrawGizmosSelected() // อันนี้ CHAT GPT ครับ
+    {
+        // 1. ระยะปลอดภัย (Safe Distance) - สีเขียว
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, safeDistance);
 
+        // 2. ระยะสั่นของกล้อง (Shake Start Distance) - สีเหลือง
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, shakeStartDistance);
+
+        // 3. ระยะความเร็วสูงสุด (Max Distance) - สีแดง
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, maxDistance);
+    }
 
 
     IEnumerator RandomGrowlRoutine()
