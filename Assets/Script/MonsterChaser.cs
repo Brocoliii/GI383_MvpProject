@@ -84,7 +84,7 @@ public class MonsterChaser : MonoBehaviour
             if (playerProgress >= startDistanceThreshold)
             {
                 hasStartedChasing = true;
-                SoundManager.Instance.PlaySFX("MonChase", 0.35f);
+                SoundManager.Instance.PlaySFX("MonChase", 0.5f);
                 Debug.Log("!");
             }
             else
@@ -134,7 +134,7 @@ public class MonsterChaser : MonoBehaviour
         GameManager.Instance.GameOver("OPERATIVE TERMINATED: CONSUMED BY HOSTILE");
 
         if (killSound != null) audioSource.PlayOneShot(killSound);
-        SoundManager.Instance.PlaySFX("MonsterEat", 5f);
+        SoundManager.Instance.PlaySFX("MonsterEat", 6f);
         if (anim != null) anim.SetTrigger("KillPlayer");
 
         
