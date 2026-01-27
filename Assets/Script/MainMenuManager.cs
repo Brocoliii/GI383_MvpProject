@@ -20,6 +20,10 @@ public class MainMenuManager : MonoBehaviour
     public Image fadeImage;
     public float fadeDuration = 1.0f;
 
+    [Header("-- Skip Hint --")]
+    public GameObject skipHintText;
+
+
     private bool isFading = false;
 
 
@@ -33,6 +37,10 @@ public class MainMenuManager : MonoBehaviour
         mainMenuUI.SetActive(true);
         if (skipUipanel != null) skipUipanel.SetActive(false);
         skipProgressBar.fillAmount = 0f;
+
+        if (skipHintText != null)
+            skipHintText.SetActive(false);
+
 
         introVideo.loopPointReached += OnVideoFinished;
 
@@ -101,9 +109,40 @@ public class MainMenuManager : MonoBehaviour
     {
         hasPlayedVideo = true;
         mainMenuUI.SetActive(false);
-        introVideo.Play();
+
+        StartCoroutine(PrepareAndPlayVideo());
+
+        if (skipHintText != null)
+            skipHintText.SetActive(true);
+
         Cursor.visible = false;
     }
+
+    IEnumerator PrepareAndPlayVideo()
+    {
+        introVideo.Prepare();
+
+        float timeout = 5f;
+        float timer = 0f;
+
+        while (!introVideo.isPrepared)
+        {
+            timer += Time.deltaTime;
+            if (timer >= timeout)
+            {
+                Debug.LogWarning("Video prepare timeout, skipping...");
+                LoadGameScene();
+                yield break;
+            }
+            yield return null;
+        }
+
+        introVideo.Play();
+    }
+
+
+
+
 
     void OnVideoFinished(VideoPlayer vp)
     {
@@ -114,10 +153,13 @@ public class MainMenuManager : MonoBehaviour
     {
         if (isFading) return;
 
-        GameManager.GameStats.ResetStats();
+        if (skipHintText != null)
+            skipHintText.SetActive(false);
 
+        GameManager.GameStats.ResetStats();
         StartCoroutine(FadeAndLoadScene());
     }
+
 
 
     public void ExitGame()

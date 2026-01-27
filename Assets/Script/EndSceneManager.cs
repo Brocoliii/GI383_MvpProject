@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 using UnityEngine.UI;
+using System.Collections;
+
 using TMPro;
 public class EndSceneManager : MonoBehaviour
 {
@@ -15,26 +17,56 @@ public class EndSceneManager : MonoBehaviour
     public Image skipProgressBar;
     public float holdDurarion = 2.0f;
 
+    [Header("-- Buttons --")]
+    public GameObject mainMenuButton;
+
+
     private float currentHoldTime = 0f;
     private bool isSkipped = false;
 
-     void Start()
+    void Start()
     {
-        if (skipUipanel != null ) skipUipanel.SetActive(false);
+        if (skipUipanel != null) skipUipanel.SetActive(false);
         if (endResultUI != null) endResultUI.SetActive(false);
+        if (mainMenuButton != null) mainMenuButton.SetActive(false);
+
         skipProgressBar.fillAmount = 0f;
 
         endViedo.loopPointReached += OnVideoFinished;
-        endViedo.Play();
+
+        StartCoroutine(PrepareAndPlayEndVideo());
 
         Cursor.visible = false;
-
-
     }
 
-     void Update()
+    IEnumerator PrepareAndPlayEndVideo()
     {
-        if (isSkipped || !endViedo.isPlaying) return;
+        endViedo.Prepare();
+
+        float timeout = 5f;
+        float timer = 0f;
+
+        while (!endViedo.isPrepared)
+        {
+            timer += Time.deltaTime;
+            if (timer >= timeout)
+            {
+                Debug.LogWarning("End video prepare timeout, skipping cutscene");
+                ShowEndResult();
+                yield break;
+            }
+            yield return null;
+        }
+
+        endViedo.Play();
+    }
+
+
+
+
+    void Update()
+    {
+        if (isSkipped) return;
         if (Input.anyKey)
         {
             if (skipUipanel != null) skipUipanel.SetActive(true);
@@ -69,12 +101,15 @@ public class EndSceneManager : MonoBehaviour
     {
         if (skipUipanel != null) skipUipanel.SetActive(false);
         if (endResultUI != null) endResultUI.SetActive(true);
+        if (mainMenuButton != null) mainMenuButton.SetActive(true);
 
-        timeText.text = "Total Time: " + GameManager.GameStats.TotalTimeSpent.ToString("F2") + "s";
+        timeText.text = "Total Time: "
+            + GameManager.GameStats.TotalTimeSpent.ToString("F2") + "s";
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
+
 
     public void BackToMainMenu()
     {
