@@ -1,7 +1,7 @@
 ### Project Description
 A 2D climbing survival game where players must escape monsters, developed following **MVP (Minimum Viable Product)** principles.
 
-* ** https://azalea44.itch.io/excod
+* **https://azalea44.itch.io/excod
 
 ### Team Roles
 * **Lead Programmer (1 member):** - Responsible for developing core character mechanics and all major game systems.
